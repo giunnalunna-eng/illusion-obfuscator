@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Illusion Obfuscator | Premium Roblox Protection</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/static/style.css?v=7">
+    <!-- Usiamo url_for per assicurarci che Render trovi i file -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body class="dark">
     <div class="app-layout">
@@ -43,7 +44,6 @@
         <main class="main-container">
             <header class="top-header">
                 <h1 class="page-title" id="page-title">Obfuscation</h1>
-                
                 <div class="header-actions">
                     <div class="tokens-badge">Tokens: <span>Unlimited</span></div>
                     <div class="theme-toggle">
@@ -53,62 +53,42 @@
             </header>
 
             <section class="content-area">
-                <!-- Dashboard View -->
                 <div class="view-section" id="dashboard-view" style="display: none;">
                     <div class="stats-row">
-                        <div class="stat-card">
-                            <span>Total Executions</span>
-                            <h2 id="total-execs">0</h2>
-                        </div>
-                        <div class="stat-card">
-                            <span>Active Users</span>
-                            <h2 id="active-users">0</h2>
-                        </div>
+                        <div class="stat-card"><span>Total Executions</span><h2 id="total-execs">0</h2></div>
+                        <div class="stat-card"><span>Active Users</span><h2 id="active-users">0</h2></div>
                     </div>
                     <div class="history-section">
                         <h3>Latest Executions (Real-time)</h3>
                         <div class="history-table" id="logs-table">
-                            <div class="table-header">
-                                <span>Player Name</span>
-                                <span>Script ID</span>
-                                <span>Time</span>
-                            </div>
+                            <div class="table-header"><span>Player Name</span><span>Script ID</span><span>Time</span></div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Account View -->
                 <div class="view-section" id="account-view" style="display: none;">
                     <div class="stat-card" style="max-width: 600px;">
                         <h3>Account Settings</h3>
                         <p style="color: var(--text-muted); margin-bottom: 24px;">Manage your profile and global settings.</p>
-                        
                         <div class="form-group" style="margin-bottom: 20px;">
                             <label style="display: block; margin-bottom: 8px;">Username</label>
                             <input type="text" id="username" placeholder="Enter username" style="width: 100%; background: var(--bg-input); border: 1px solid var(--border); padding: 10px; border-radius: 8px; color: white;">
                         </div>
-
                         <div class="form-group" style="margin-bottom: 20px;">
                             <label style="display: block; margin-bottom: 8px;">Global Telemetry URL</label>
                             <input type="text" id="custom-url" placeholder="http://your-site.com/log_execution" style="width: 100%; background: var(--bg-input); border: 1px solid var(--border); padding: 10px; border-radius: 8px; color: white;">
                             <small style="color: var(--text-muted);">This URL will be injected into all obfuscated scripts.</small>
                         </div>
-
                         <button class="btn-obfuscate" id="btn-save-settings">SAVE SETTINGS & ACCOUNT</button>
                     </div>
                 </div>
 
-                <!-- Obfuscator View -->
                 <div class="view-section" id="obfuscator-view">
                     <div class="editor-area" id="editor-area">
                         <div class="editor-container">
-                            <div class="editor-header">
-                                <span>Input Script</span>
-                                <button id="btn-clear">Clear</button>
-                            </div>
+                            <div class="editor-header"><span>Input Script</span><button id="btn-clear">Clear</button></div>
                             <textarea id="code-input" placeholder="Paste your Lua code here..."></textarea>
                         </div>
-                        
                         <div class="action-panel">
                             <div class="strength-control">
                                 <span>Protection Level:</span>
@@ -120,12 +100,8 @@
                             </div>
                             <button class="btn-obfuscate" id="btn-obfuscate">OBFUSCATE SCRIPT</button>
                         </div>
-
                         <div class="editor-container">
-                            <div class="editor-header">
-                                <span>Protected Script</span>
-                                <button id="btn-copy">Copy Code</button>
-                            </div>
+                            <div class="editor-header"><span>Protected Script</span><button id="btn-copy">Copy Code</button></div>
                             <textarea id="code-output" readonly placeholder="Result will appear here..."></textarea>
                         </div>
                     </div>
@@ -133,8 +109,8 @@
             </section>
         </main>
     </div>
-
     <div id="toast-container"></div>
-    <script src="/static/script.js?v=7"></script>
+    <!-- Usiamo url_for anche qui -->
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
