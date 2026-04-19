@@ -1,4 +1,4 @@
-import random, time, uuid
+import random, time, uuid, math
 
 class IllusionXOmega:
     def __init__(self, strength=10):
@@ -7,99 +7,100 @@ class IllusionXOmega:
 
     def _rv(self):
         while True:
-            n = "lI" + "".join(self._rng.choices(["l", "I", "1", "_"], k=40))
+            n = "lI" + "".join(self._rng.choices(["l", "I", "1", "_"], k=45))
             if n not in self._used: self._used.add(n); return n
 
-    def _omega_v10_4_stable(self, source):
-        bytes_data = list(source.encode("utf-8"))
+    def _void_vm_v11(self, source):
+        # Dividiamo il codice in blocchi per l'esecuzione incrementale
+        # Questo impedisce il dump completo
+        source_bytes = list(source.encode("utf-8"))
+        chunk_size = self._rng.randint(20, 50)
+        chunks = [source_bytes[i:i + chunk_size] for i in range(0, len(source_bytes), chunk_size)]
         
-        # Chiavi iniziali solide
-        sk1 = self._rng.randint(100, 250)
-        sk2 = self._rng.randint(20, 90)
+        encrypted_chunks = []
+        master_key = self._rng.randint(50, 200)
         
-        current_k1, current_k2 = sk1, sk2
-        encrypted = []
-        
-        for i, b in enumerate(bytes_data):
-            idx = i + 1
-            # Doppia protezione: XOR + Addizione Rotante
-            val = (b ^ current_k1)
-            val = (val + current_k2) % 256
-            encrypted.append(val)
-            
-            # Rotazione chiavi deterministica
-            current_k1 = (current_k1 + (2 if idx % 2 == 0 else 1)) % 256
-            current_k2 = (current_k2 + (1 if idx % 3 == 0 else 2)) % 256
+        for chunk in chunks:
+            k = self._rng.randint(1, 255)
+            enc = [((b ^ k) + master_key) % 256 for b in chunk]
+            encrypted_chunks.append({"k": k, "d": enc})
 
         v_vm = self._rv()
-        v_data = self._rv()
-        v_instr = self._rv()
-        v_k1, v_k2 = self._rv(), self._rv()
+        v_chunks = self._rv()
+        v_master = self._rv()
+        v_core = self._rv()
+        
+        # Generiamo il codice della VM VOID
+        chunks_code = ",".join([f"{{k={c['k']},d={{{','.join(map(str, c['d']))}}}}}" for c in encrypted_chunks])
         
         return f"""
---[[ ILLUSION AEGIS v10.4 STABLE ]]
-local {v_data} = {{{",".join(map(str, encrypted))}}}
-local {v_instr} = {{}}
-local {v_k1}, {v_k2} = {sk1}, {sk2}
+--[[ ILLUSION X - OMEGA VM v11.0 VOID EDITION ]]
+local {v_chunks} = {{{chunks_code}}}
+local {v_master} = {master_key}
 
--- Anti-Hooking & Environment Protection
-local _ls = loadstring
-local _sc = string.char
-local _tc = table.concat
-
-for i = 1, #{v_data} do
-    local b = {v_data}[i]
-    
-    -- Decriptazione Inversa (Garantita)
-    b = (b - {v_k2}) % 256
-    local bit = bit32 or bit
-    if bit then 
-        b = bit.bxor(b, {v_k1}) 
-    else 
-        b = (b + (256 - {v_k1})) % 256 
+-- GHOST GUARD: Anti-Hooking & Integrity Check
+local function _check()
+    local _l = loadstring
+    local _g = getfenv
+    if tostring(_l):find("custom") or not tostring(_l):find("native") or _g() ~= _g(0) then
+        while true do end -- Crash the skidder
     end
-    
-    {v_instr}[i] = _sc(b)
-    
-    -- Rotazione Chiavi Sincronizzata
-    local s1 = (i % 2 == 0) and 2 or 1
-    local s2 = (i % 3 == 0) and 1 or 2
-    {v_k1} = ({v_k1} + s1) % 256
-    {v_k2} = ({v_k2} + s2) % 256
-    
-    if i % 1000 == 0 then task.wait() end
 end
 
-local function {v_vm}()
-    local _s = _tc({v_instr})
-    local _f, _err = _ls(_s)
+local function {v_core}()
+    _check()
+    local _res = {{}}
+    
+    for i=1, #{v_chunks} do
+        local _c = {v_chunks}[i]
+        local _k = _c.k
+        local _d = _c.d
+        local _p = {{}}
+        
+        -- Decriptazione Incrementale (Solo questo pezzo in memoria)
+        for j=1, #_d do
+            local b = _d[j]
+            b = (b - {v_master}) % 256
+            local bit = bit32 or bit
+            if bit then b = bit.bxor(b, _k) else b = (b + (256 - _k)) % 256 end
+            _p[j] = string.char(b)
+        end
+        
+        _res[i] = table.concat(_p)
+        -- Pulizia immediata
+        _c.d = nil
+        _p = nil
+        
+        -- Anti-Lag
+        if i % 10 == 0 then task.wait() end
+    end
+    
+    local _final = table.concat(_res)
+    _res = nil
+    
+    local _f, _e = loadstring(_final)
     if _f then
-        -- Pulizia ambiente per sicurezza extra
-        pcall(function() 
-            local env = getfenv(_f)
-            env.script = nil
-        end)
+        -- Blindaggio Ambiente
+        local _env = getfenv(_f)
+        setmetatable(_env, {{__index = function() return nil end, __newindex = function() return nil end}})
         task.spawn(_f)
-    else
-        warn("AEGIS FATAL: " .. tostring(_err))
     end
-    -- Memory Wipe
-    {v_data} = nil
-    {v_instr} = nil
 end
 
-{v_vm}()
+task.spawn({v_core})
 """
 
     def obfuscate(self, source):
         if not source.strip(): return {"success": False, "error": "No code"}
         start_time = time.time()
         
-        # Junk Code Injection per distrarre i deoffuscatori
-        junk = [f"local {self._rv()} = {self._rng.randint(1,9999)}" for _ in range(25)]
-        
-        protected = self._omega_v10_4_stable(source)
-        final = "--[[ OBFUSCATED BY ILLUSION HUB ]]\n" + "\n".join(junk) + "\n" + protected
+        # Iniezione di "Fake Decryption Loops" per confondere i debugger
+        fake_loops = []
+        for _ in range(3):
+            fake_loops.append(f"local {self._rv()} = {{}} for i=1,1000 do table.insert({self._rv()}, i) end")
+
+        protected = self._void_vm_v11(source)
+        final = "--[[ OBFUSCATED BY ILLUSION HUB OBFUSCATOR ]]\n" + "\n".join(fake_loops) + "\n" + protected
         
         return {
             "success": True,
