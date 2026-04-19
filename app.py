@@ -17,7 +17,6 @@ def handle_obfuscate():
         script_name = data.get('name', 'Illusion Script')
         use_pastefy = data.get('use_pastefy', False)
         
-        # Offuscamento con Motore Abyssal VM v9.0
         result = obfuscate_code(source, strength)
         if not result['success']:
             return jsonify({"success": False, "error": result['error']})
