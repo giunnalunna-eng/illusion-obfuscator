@@ -1,4 +1,4 @@
-import random, time, uuid, base64
+import random, time, uuid
 
 class IllusionXOmega:
     def __init__(self, strength=10):
@@ -10,21 +10,19 @@ class IllusionXOmega:
             n = "lI" + "".join(self._rng.choices(["l", "I", "1", "_"], k=45))
             if n not in self._used: self._used.add(n); return n
 
-    def _eternal_vm_v12(self, source):
-        # 1. Preparazione Trappola per Skidder
+    def _eternal_vm_v12_1(self, source):
         trap_message = "dont try to skid"
         
-        # 2. Virtualizzazione a Frammenti (Dispatcher)
+        # 1. Suddivisione in Frammenti (Più piccoli per sicurezza estrema)
         source_bytes = list(source.encode("utf-8"))
-        chunk_size = self._rng.randint(15, 35)
+        chunk_size = self._rng.randint(12, 28)
         chunks = [source_bytes[i:i + chunk_size] for i in range(0, len(source_bytes), chunk_size)]
         
         v_chunks = self._rv()
         v_dispatcher = self._rv()
         v_trap = self._rv()
-        v_key = self._rng.randint(50, 250)
+        v_key = self._rng.randint(55, 245)
         
-        # Criptazione frammentata
         encrypted_chunks = []
         for c in chunks:
             k = self._rng.randint(1, 255)
@@ -52,7 +50,6 @@ local function {v_dispatcher}()
     local _sc = string.char
     local _tc = table.concat
     
-    -- Esecuzione Virtualizzata
     for i=1, #{v_chunks} do
         local _c = {v_chunks}[i]
         local _k = _c.k
@@ -68,31 +65,31 @@ local function {v_dispatcher}()
         end
         
         _res[i] = _tc(_p)
-        _c.d = nil -- Wipe Chunk
+        _c.d = nil 
         
-        -- Anti-Lag
-        if i % 20 == 0 then task.wait() end
+        if i % 25 == 0 then task.wait() end
     end
     
     local _final = _tc(_res)
     _res = nil
     
-    -- Esecuzione in Ambiente Blindato (Sandbox)
+    -- Esecuzione in Sandbox (Impossibile da catturare)
     local _f, _err = _ls(_final)
     if _f then
         local _proxy = setmetatable({{}}, {{
             __index = function(_, k)
-                if k == "loadstring" or k == "getfenv" then
+                if k == "loadstring" or k == "getfenv" or k == "setfenv" then
                     print({v_trap})
                     return function() while true do end end
                 end
                 return _env(0)[k]
-            end
+            end,
+            __metatable = "Locked by Illusion"
         }})
         setfenv(_f, _proxy)
         task.spawn(_f)
     else
-        warn("ETERNAL ERROR")
+        warn("ETERNAL v12.1 ERROR")
     end
 end
 
@@ -103,14 +100,15 @@ task.spawn({v_dispatcher})
         if not source.strip(): return {"success": False, "error": "No code"}
         start_time = time.time()
         
-        # Iniezione di Fake Opcodes per distruggere i de-offuscatori automatici
+        # Junk Code Injection (Ora con nomi variabili solidi)
         junk = []
-        for _ in range(30):
+        for _ in range(35):
             v = self._rv()
-            junk.append(f"local {v} = function() return '{uuid.uuid4()}' end")
+            junk.append(f"local {v} = function() local _ = '{uuid.uuid4()}' return _ end")
 
-        protected = self._eternal_vm_v12(source)
-        final = "OBFUSCATED BY ILLUSION HUB OBFUSCATOR\n" + "\n".join(junk) + "\n" + protected
+        protected = self._eternal_vm_v12_1(source)
+        # CORRETTO: Aggiunti i commenti al Watermark
+        final = "--[[ OBFUSCATED BY ILLUSION HUB OBFUSCATOR ]]\n" + "\n".join(junk) + "\n" + protected
         
         return {
             "success": True,
