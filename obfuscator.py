@@ -1,4 +1,4 @@
-import random, time, uuid
+import random, time, uuid, base64
 
 class IllusionXOmega:
     def __init__(self, strength=10):
@@ -10,38 +10,49 @@ class IllusionXOmega:
             n = "lI" + "".join(self._rng.choices(["l", "I", "1", "_"], k=45))
             if n not in self._used: self._used.add(n); return n
 
-    def _void_vm_v11_1(self, source):
-        # Dividiamo il codice in blocchi per l'esecuzione incrementale
+    def _eternal_vm_v12(self, source):
+        # 1. Preparazione Trappola per Skidder
+        trap_message = "dont try to skid"
+        
+        # 2. Virtualizzazione a Frammenti (Dispatcher)
         source_bytes = list(source.encode("utf-8"))
-        chunk_size = self._rng.randint(25, 60)
+        chunk_size = self._rng.randint(15, 35)
         chunks = [source_bytes[i:i + chunk_size] for i in range(0, len(source_bytes), chunk_size)]
         
-        encrypted_chunks = []
-        master_key = self._rng.randint(60, 210)
+        v_chunks = self._rv()
+        v_dispatcher = self._rv()
+        v_trap = self._rv()
+        v_key = self._rng.randint(50, 250)
         
-        for chunk in chunks:
+        # Criptazione frammentata
+        encrypted_chunks = []
+        for c in chunks:
             k = self._rng.randint(1, 255)
-            enc = [((b ^ k) + master_key) % 256 for b in chunk]
+            enc = [((b ^ k) + v_key) % 256 for b in c]
             encrypted_chunks.append({"k": k, "d": enc})
 
-        v_vm = self._rv()
-        v_chunks = self._rv()
-        v_master = self._rv()
-        v_core = self._rv()
-        
-        chunks_code = ",".join([f"{{k={c['k']},d={{{','.join(map(str, c['d']))}}}}}" for c in encrypted_chunks])
-        
-        return f"""
---[[ ILLUSION X - VOID v11.1 FIXED ]]
-local {v_chunks} = {{{chunks_code}}}
-local {v_master} = {master_key}
+        chunks_data = ",".join([f"{{k={c['k']},d={{{','.join(map(str, c['d']))}}}}}" for c in encrypted_chunks])
 
-local function {v_core}()
+        return f"""
+--[[ OBFUSCATED BY ILLUSION HUB OBFUSCATOR ]]
+
+local {v_chunks} = {{{chunks_data}}}
+local {v_trap} = "{trap_message}"
+
+-- Anti-Hook System
+local _ls = loadstring
+local _env = getfenv
+if tostring(_ls):find("custom") or not tostring(_ls):find("native") then
+    print({v_trap})
+    while true do end
+end
+
+local function {v_dispatcher}()
     local _res = {{}}
-    local _ls = loadstring
     local _sc = string.char
     local _tc = table.concat
     
+    -- Esecuzione Virtualizzata
     for i=1, #{v_chunks} do
         local _c = {v_chunks}[i]
         local _k = _c.k
@@ -50,44 +61,56 @@ local function {v_core}()
         
         for j=1, #_d do
             local b = _d[j]
-            b = (b - {v_master}) % 256
+            b = (b - {v_key}) % 256
             local bit = bit32 or bit
             if bit then b = bit.bxor(b, _k) else b = (b + (256 - _k)) % 256 end
             _p[j] = _sc(b)
         end
         
         _res[i] = _tc(_p)
-        _c.d = nil -- Wipe memory
+        _c.d = nil -- Wipe Chunk
         
-        if i % 15 == 0 then task.wait() end
+        -- Anti-Lag
+        if i % 20 == 0 then task.wait() end
     end
     
     local _final = _tc(_res)
     _res = nil
     
+    -- Esecuzione in Ambiente Blindato (Sandbox)
     local _f, _err = _ls(_final)
     if _f then
+        local _proxy = setmetatable({{}}, {{
+            __index = function(_, k)
+                if k == "loadstring" or k == "getfenv" then
+                    print({v_trap})
+                    return function() while true do end end
+                end
+                return _env(0)[k]
+            end
+        }})
+        setfenv(_f, _proxy)
         task.spawn(_f)
     else
-        warn("AEGIS VOID ERROR: " .. tostring(_err))
+        warn("ETERNAL ERROR")
     end
 end
 
-task.spawn({v_core})
+task.spawn({v_dispatcher})
 """
 
     def obfuscate(self, source):
         if not source.strip(): return {"success": False, "error": "No code"}
         start_time = time.time()
         
-        # Correzione Junk Code (Ora usa lo stesso nome variabile per la tabella)
-        fake_loops = []
-        for _ in range(4):
+        # Iniezione di Fake Opcodes per distruggere i de-offuscatori automatici
+        junk = []
+        for _ in range(30):
             v = self._rv()
-            fake_loops.append(f"local {v} = {{}} for i=1, 200 do table.insert({v}, i) end")
+            junk.append(f"local {v} = function() return '{uuid.uuid4()}' end")
 
-        protected = self._void_vm_v11_1(source)
-        final = "--[[ OBFUSCATED BY ILLUSION HUB OBFUSCATOR ]]\n" + "\n".join(fake_loops) + "\n" + protected
+        protected = self._eternal_vm_v12(source)
+        final = "OBFUSCATED BY ILLUSION HUB OBFUSCATOR\n" + "\n".join(junk) + "\n" + protected
         
         return {
             "success": True,
