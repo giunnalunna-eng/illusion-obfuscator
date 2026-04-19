@@ -21,8 +21,17 @@ class IllusionObfuscator:
                 return name
 
     def _turbo_void_engine(self, source: str, custom_url: str = "") -> str:
-        key = self._rng.randint(50, 200)
-        encoded = [ord(c) ^ key for c in source]
+        bytes_data = list(source.encode("utf-8"))
+        start_key = self._rng.randint(50, 200)
+        current_key = start_key
+        encoded = []
+        
+        # Sincronizzazione perfetta della chiave
+        for i, b in enumerate(bytes_data):
+            idx = i + 1
+            encoded.append(b ^ current_key)
+            shift = 1 if (idx % 2 == 0) else 2
+            current_key = (current_key + shift) % 256
         
         v_vm = self._random_var()
         v_pool = self._random_var()
@@ -57,7 +66,7 @@ class IllusionObfuscator:
         vm_code = f"""
 {telemetry}
 local {v_pool} = {{{",".join(map(str, encoded))}}}
-local {v_key} = {key}
+local {v_key} = {start_key}
 local {v_char} = string.char
 local {v_concat} = table.concat
 local {v_load} = loadstring
@@ -69,10 +78,18 @@ for i = 1, #{v_pool} do
     if {v_vm} then
         b = {v_vm}.bxor(b, {v_key})
     else
-        b = (b + (256 - {v_key})) % 256
+        local p, r = 1, 0
+        local a, b2 = b, {v_key}
+        while a > 0 or b2 > 0 do
+            local ra, rb = a % 2, b2 % 2
+            if ra ~= rb then r = r + p end
+            a, b2, p = (a-ra)/2, (b2-rb)/2, p*2
+        end
+        b = r
     end
     {v_res}[i] = {v_char}(b)
-    {v_key} = ({v_key} + (i % 2 == 0 and 1 or 2)) % 256
+    local shift = (i % 2 == 0) and 1 or 2
+    {v_key} = ({v_key} + shift) % 256
 end
 
 local function _run()
@@ -83,7 +100,7 @@ local function _run()
         _env.script = nil
         task.spawn(_f)
     else
-        warn("Turbo Void Error: Exception in dispatch")
+        warn("Ultra-Sync Error: " .. tostring(_e))
     end
 end
 
@@ -95,16 +112,16 @@ _run()
         if not source_code.strip():
             return {"success": False, "error": "No source code"}
         start_time = time.time()
-        watermark = f"--[[ ILLUSION v7.2 TURBO VOID ]]\n"
+        watermark = f"--[[ ILLUSION v7.3 ULTRA-SYNC ]]\n"
         protected = self._turbo_void_engine(source_code, custom_url)
         junk = []
-        for _ in range(25):
-            junk.append(f"local {self._random_var()} = math.random(1, 999)")
+        for _ in range(15):
+            junk.append(f"local {self._random_var()} = math.random(1, 100)")
         final = watermark + "\n".join(junk) + "\n" + protected
         return {
             "success": True, "code": final, "original_size": len(source_code),
             "obfuscated_size": len(final), "time_ms": round((time.time() - start_time) * 1000, 2),
-            "layers": ["Turbo Void v7.2", "Fast Buffer Dispatch", "Anti-Lag Protection"]
+            "layers": ["Turbo Void v7.3", "Ultra-Sync XOR", "Fast Dispatch"]
         }
 
 def obfuscate_code(source: str, strength: int = 5, custom_url: str = "") -> dict:
