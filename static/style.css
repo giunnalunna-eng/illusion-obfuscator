@@ -1,29 +1,86 @@
-:root { --accent: #00d4ff; --bg: #030303; }
-* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Space Grotesk', sans-serif; }
-body { background: var(--bg); color: white; overflow-x: hidden; }
-.glow-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at 15% 15%, rgba(0, 212, 255, 0.05) 0%, transparent 45%); z-index: -1; }
-.app-container { display: flex; }
-.side-nav { width: 260px; background: #000; border-right: 1px solid rgba(0, 212, 255, 0.1); padding: 40px 20px; height: 100vh; position: sticky; top: 0; }
-.brand { color: var(--accent); font-weight: 700; font-size: 1.3rem; display: flex; align-items: center; gap: 12px; margin-bottom: 60px; }
-.brand-icon { width: 32px; height: 32px; background: var(--accent); color: black; display: flex; align-items: center; justify-content: center; border-radius: 6px; font-weight: 900; box-shadow: 0 0 15px var(--accent); }
-.nav-link { display: flex; align-items: center; gap: 12px; padding: 14px; color: #777; text-decoration: none; border-radius: 10px; margin-bottom: 5px; }
-.nav-link.active, .nav-link:hover { background: rgba(0, 212, 255, 0.05); color: var(--accent); }
-.content-wrapper { flex: 1; padding: 40px 50px; }
-.obfuscator-grid { display: grid; grid-template-columns: 1fr 260px 1fr; gap: 25px; }
-.glass { background: rgba(10, 10, 10, 0.8); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 18px; backdrop-filter: blur(15px); }
-.panel-header { padding: 15px 20px; border-bottom: 1px solid rgba(255, 255, 255, 0.05); color: var(--accent); font-size: 0.7rem; font-weight: 700; text-transform: uppercase; display: flex; justify-content: space-between; align-items: center; }
-textarea { width: 100%; height: 400px; background: transparent; border: none; padding: 20px; color: #fff; font-family: monospace; outline: none; }
-.btn-primary-glow { background: var(--accent); color: black; border: none; padding: 18px; border-radius: 12px; font-weight: 700; cursor: pointer; transition: 0.3s; box-shadow: 0 0 15px rgba(0, 212, 255, 0.3); }
-.btn-primary-glow:hover { transform: translateY(-2px); box-shadow: 0 0 25px var(--accent); }
-.btn-system { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); color: #888; padding: 6px 14px; border-radius: 6px; font-size: 0.65rem; font-weight: 700; cursor: pointer; transition: 0.3s; }
-.btn-system:hover { background: rgba(0, 212, 255, 0.1); border-color: var(--accent); color: var(--accent); }
-.switch { position: relative; width: 44px; height: 22px; display: inline-block; }
+:root {
+    --primary: #a020f0; /* Viola Illusion */
+    --bg: #0d0d0d;
+    --card: #151515;
+    --text: #ffffff;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+body { background: var(--bg); color: var(--text); }
+
+.app-wrapper { display: flex; min-height: 100vh; }
+
+.sidebar {
+    width: 240px;
+    background: #000;
+    padding: 30px;
+    border-right: 1px solid rgba(160, 32, 240, 0.2);
+    display: flex;
+    flex-direction: column;
+}
+
+.logo { font-weight: 900; font-size: 1.5rem; color: var(--primary); margin-bottom: 40px; }
+
+.main-content { flex: 1; padding: 40px; }
+
+.editor-grid {
+    display: grid;
+    grid-template-columns: 1fr 240px 1fr;
+    gap: 20px;
+}
+
+.editor-box {
+    background: var(--card);
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.05);
+    overflow: hidden;
+}
+
+.box-header {
+    background: rgba(160, 32, 240, 0.1);
+    padding: 10px 15px;
+    font-size: 0.8rem;
+    display: flex;
+    justify-content: space-between;
+}
+
+textarea {
+    width: 100%;
+    height: 350px;
+    background: transparent;
+    border: none;
+    padding: 15px;
+    color: #fff;
+    resize: none;
+    outline: none;
+}
+
+.btn-main {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 15px;
+    border-radius: 8px;
+    font-weight: 700;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 20px;
+}
+
+/* ================== MOBILE FIX ================== */
+@media (max-width: 900px) {
+    .app-wrapper { flex-direction: column; }
+    .sidebar { width: 100%; height: auto; padding: 20px; border-right: none; border-bottom: 1px solid var(--primary); }
+    .main-content { padding: 20px; }
+    .editor-grid { grid-template-columns: 1fr; } /* Mette tutto in colonna */
+    textarea { height: 250px; }
+    .logo { margin-bottom: 0; }
+}
+
+/* Switch & Toggle Style */
+.switch { position: relative; width: 40px; height: 20px; display: inline-block; }
 .switch input { opacity: 0; }
-.slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background: #1a1a1a; border-radius: 20px; transition: 0.4s; }
-.slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px; background: #555; border-radius: 50%; transition: 0.4s; }
-input:checked + .slider { background: var(--accent); }
-input:checked + .slider:before { transform: translateX(22px); background: #000; }
-.log-card { background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05); padding: 15px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; animation: slideIn 0.3s ease-out; }
-@keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
-.log-player { color: var(--accent); font-weight: 700; font-size: 0.85rem; }
-.user-badge { border: 1px solid rgba(0,212,255,0.1); padding: 10px; border-radius: 8px; text-align: center; color: var(--accent); font-size: 0.65rem; letter-spacing: 2px; }
+.slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background: #333; border-radius: 20px; transition: .4s; }
+.slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 3px; bottom: 3px; background: white; border-radius: 50%; transition: .4s; }
+input:checked + .slider { background: var(--primary); }
+input:checked + .slider:before { transform: translateX(20px); }
