@@ -3,56 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AEGIS CRIMSON | Advanced Lua Obfuscator</title>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet">
+    <title>AEGIS | Premium Lua Obfuscator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body class="dark-mode">
     <div class="glow-bg"></div>
+    
     <div class="app-container">
         <nav class="side-nav">
-            <div class="brand"><div class="brand-icon">A</div><span>AEGIS</span></div>
+            <div class="brand">
+                <div class="brand-icon">A</div>
+                <span>AEGIS</span>
+            </div>
             <div class="nav-links">
-                <a href="#" class="nav-link active">Protection</a>
-                <a href="#" class="nav-link">History</a>
+                <a href="#" class="nav-link active">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    Protection
+                </a>
+                <a href="#" class="nav-link">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    History
+                </a>
+            </div>
+            <div class="nav-footer">
+                <div class="user-badge">V9.5 VOID</div>
             </div>
         </nav>
+
         <main class="content-wrapper">
             <header class="main-header">
-                <h1>Script Protection</h1>
-                <p>Powered by Abyssal VM Virtualization Engine</p>
+                <div class="header-info">
+                    <h1>Script Protection</h1>
+                    <p>Free Secure Virtualization</p>
+                </div>
+                <div class="header-stats">
+                    <div class="stat-pill">Status: <span>Online</span></div>
+                </div>
             </header>
+
             <div class="obfuscator-grid">
                 <div class="panel glass">
-                    <div class="panel-header"><span>Source Code</span><button id="btn-clear">Clear</button></div>
-                    <textarea id="code-input" placeholder="-- Paste Lua script here..."></textarea>
+                    <div class="panel-header"><span>Source Code</span><button id="btn-clear" class="btn-text">Clear</button></div>
+                    <textarea id="code-input" placeholder="-- Paste code..."></textarea>
                 </div>
+
                 <div class="controls-panel glass">
-                    <div class="control-group"><label>Script Name</label><input type="text" id="script-name" placeholder="Project Name"></div>
-                    <div class="control-group"><label>Protection Level</label>
-                        <div class="pills-container"><button class="pill active">VOID</button></div>
+                    <div class="control-group">
+                        <label>Script Name</label>
+                        <input type="text" id="script-name" placeholder="Name">
                     </div>
-                    <div class="control-group"><div class="toggle-box"><span>Use Pastefy</span><label class="switch"><input type="checkbox" id="use-pastefy"><span class="slider"></span></label></div></div>
-                    <button id="btn-obfuscate" class="btn-primary-glow">PROTECT SCRIPT</button>
+                    
+                    <div class="control-group">
+                        <div class="toggle-box" style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="font-size: 0.8rem; color: #888;">Pastefy</span>
+                            <label class="switch">
+                                <input type="checkbox" id="use-pastefy">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <button id="btn-obfuscate" class="btn-primary-glow">PROTECT & COPY</button>
                 </div>
+
                 <div class="panel glass">
-                    <div class="panel-header"><span>Protected Result</span><button id="btn-copy">Copy</button></div>
+                    <div class="panel-header"><span>Result</span><button id="btn-copy" class="btn-text">Copy</button></div>
                     <textarea id="code-output" readonly placeholder="Result..."></textarea>
                 </div>
             </div>
-            <section class="history-view"><h2 class="section-title">Recent Activity</h2><div class="history-grid" id="history-list"></div></section>
+
+            <section class="history-view">
+                <h2 class="section-title">Recent Scripts</h2>
+                <div class="history-grid" id="history-list"></div>
+            </section>
         </main>
     </div>
-    <div id="payment-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 9999; align-items: center; justify-content: center;">
-        <div class="glass" style="max-width: 400px; padding: 40px; text-align: center;">
-            <h2 style="color:red">Payment Required</h2>
-            <p style="margin: 20px 0;">0.20€ to giunnalunna@gmail.com</p>
-            <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=giunnalunna@gmail.com&currency_code=EUR&amount=0.20&item_name=Aegis" target="_blank" class="btn-primary-glow" style="display:block; text-decoration:none; margin:20px 0">Pay via PayPal</a>
-            <input type="text" id="tx-id" placeholder="Transaction ID" style="width:100%; padding:10px; background:#111; border:1px solid red; color:white; margin-bottom:20px">
-            <button id="btn-confirm-pay" class="btn-primary-glow" style="width:100%">Verify & Unlock</button>
-            <button onclick="document.getElementById('payment-modal').style.display='none'" style="background:none; border:none; color:#555; margin-top:10px; cursor:pointer">Cancel</button>
-        </div>
-    </div>
+
+    <div id="toast-container"></div>
     <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
