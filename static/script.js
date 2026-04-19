@@ -5,22 +5,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const input = document.getElementById('code-input');
     const output = document.getElementById('code-output');
     const nameInp = document.getElementById('script-name');
-    const pasteToggle = document.getElementById('use-pastefy');
     const historyList = document.getElementById('history-list');
 
     function renderHistory() {
         const history = JSON.parse(localStorage.getItem('obf_history') || '[]');
         historyList.innerHTML = history.reverse().map((item, idx) => `
-            <div class="history-item">
-                <div><div class="history-name">${item.name}</div><div style="font-size:0.7rem;color:#888;">${item.date}</div></div>
-                <button style="background:red;color:white;border:none;padding:5px;border-radius:4px;cursor:pointer;" onclick="navigator.clipboard.writeText(\`${item.code}\`); alert('Copied!')">Copy</button>
+            <div class="history-card">
+                <div><div style="font-weight:700">${item.name}</div><div style="font-size:0.7rem;color:#555">${item.date}</div></div>
+                <button style="background:red;border:none;color:white;padding:5px 10px;border-radius:5px;cursor:pointer" onclick="navigator.clipboard.writeText(\`${item.code}\`); alert('Copied!')">Copy</button>
             </div>
-        `).join('') || '<div style="padding:20px;text-align:center;">No history.</div>';
+        `).join('') || '<p style="color:#555">No history found.</p>';
     }
     renderHistory();
 
     btnObf.addEventListener('click', () => {
-        if (!nameInp.value || !input.value) return alert('Name and Code required!');
+        if (!nameInp.value || !input.value) return alert('Name and code are required!');
         modal.style.display = 'flex';
     });
 
@@ -29,7 +28,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const res = await fetch('/obfuscate', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ code: input.value, name: nameInp.value, strength: 5, use_pastefy: pasteToggle.checked })
+            body: JSON.stringify({ 
+                code: input.value, 
+                name: nameInp.value, 
+                strength: 5, 
+                use_pastefy: document.getElementById('use-pastefy').checked 
+            })
         });
         const data = await res.json();
         if (data.success) {
