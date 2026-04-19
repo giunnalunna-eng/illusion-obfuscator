@@ -103,7 +103,7 @@ task.spawn({v_vm})
             junk.append(f"local {self._rv()} = '{uuid.uuid4()}'")
             
         protected = self._omega_vm_compiler(source)
-        final = "--[[ OBFUSCATED BY ILLUSION X - OMEGA VM ]]\n" + "\n".join(junk) + "\n" + protected
+        final = "--[[ OBFUSCATED BY ILLUSION ]]\n" + "\n".join(junk) + "\n" + protected
         
         return {
             "success": True,
