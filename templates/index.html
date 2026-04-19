@@ -3,58 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Illusion Obfuscator | Classic</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <title>Illusion | Vantablack v8.1</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-<body class="dark-theme">
-    <div class="app-wrapper">
-        <aside class="sidebar">
-            <div class="logo">ILLUSION</div>
-            <nav>
-                <div class="nav-item active">Obfuscator</div>
-            </nav>
-            <div class="footer-badge">V8.0 PRO</div>
-        </aside>
-
-        <main class="main-content">
-            <header>
-                <h1>Lua Obfuscation</h1>
-                <p>Classic Secure Protection</p>
-            </header>
-
-            <div class="editor-grid">
-                <div class="editor-box">
-                    <div class="box-header">Source Code <button id="btn-clear">Clear</button></div>
-                    <textarea id="code-input" placeholder="Paste code..."></textarea>
-                </div>
-
-                <div class="settings-box">
-                    <div class="input-group">
-                        <label>Script Name</label>
-                        <input type="text" id="script-name" placeholder="Name">
-                    </div>
-                    <div class="toggle-group">
-                        <span>Use Pastefy</span>
-                        <label class="switch">
-                            <input type="checkbox" id="use-pastefy">
-                            <span class="slider"></span>
-                        </label>
-                    </div>
-                    <button id="btn-obfuscate" class="btn-main">OBFUSCATE</button>
-                </div>
-
-                <div class="editor-box">
-                    <div class="box-header">Result <button id="btn-copy">Copy</button></div>
-                    <textarea id="code-output" readonly placeholder="Output..."></textarea>
-                </div>
-            </div>
-
-            <section class="history-section">
-                <h2>Recent Protection</h2>
-                <div id="history-list"></div>
-            </section>
-        </main>
+<body>
+    <div class="container">
+        <h1 style="color:#a020f0">VANTABLACK VM</h1>
+        <textarea id="code-input" placeholder="Paste source..."></textarea>
+        <button id="btn-obfuscate">OBFUSCATE SCRIPT</button>
+        <textarea id="code-output" readonly placeholder="Result..."></textarea>
     </div>
     <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
