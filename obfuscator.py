@@ -10,17 +10,18 @@ class IllusionXOmega:
             n = "lI" + "".join(self._rng.choices(["l", "I", "1", "_"], k=45))
             if n not in self._used: self._used.add(n); return n
 
-    def _eternal_vm_v12_1(self, source):
+    def _eternal_vm_v12_2(self, source):
         trap_message = "dont try to skid"
-        
-        # 1. Suddivisione in Frammenti (Più piccoli per sicurezza estrema)
         source_bytes = list(source.encode("utf-8"))
-        chunk_size = self._rng.randint(12, 28)
+        
+        # Aumentiamo leggermente la dimensione dei blocchi per velocità
+        chunk_size = self._rng.randint(30, 60)
         chunks = [source_bytes[i:i + chunk_size] for i in range(0, len(source_bytes), chunk_size)]
         
         v_chunks = self._rv()
         v_dispatcher = self._rv()
         v_trap = self._rv()
+        v_clock = self._rv()
         v_key = self._rng.randint(55, 245)
         
         encrypted_chunks = []
@@ -37,18 +38,11 @@ class IllusionXOmega:
 local {v_chunks} = {{{chunks_data}}}
 local {v_trap} = "{trap_message}"
 
--- Anti-Hook System
-local _ls = loadstring
-local _env = getfenv
-if tostring(_ls):find("custom") or not tostring(_ls):find("native") then
-    print({v_trap})
-    while true do end
-end
-
 local function {v_dispatcher}()
     local _res = {{}}
     local _sc = string.char
     local _tc = table.concat
+    local {v_clock} = os.clock()
     
     for i=1, #{v_chunks} do
         local _c = {v_chunks}[i]
@@ -67,14 +61,20 @@ local function {v_dispatcher}()
         _res[i] = _tc(_p)
         _c.d = nil 
         
-        if i % 25 == 0 then task.wait() end
+        -- SMART YIELD: Se il calcolo dura più di 0.01 secondi, pausa per evitare il freeze
+        if os.clock() - {v_clock} > 0.01 then
+            task.wait()
+            {v_clock} = os.clock()
+        end
     end
     
     local _final = _tc(_res)
     _res = nil
     
-    -- Esecuzione in Sandbox (Impossibile da catturare)
+    local _ls = loadstring
+    local _env = getfenv
     local _f, _err = _ls(_final)
+    
     if _f then
         local _proxy = setmetatable({{}}, {{
             __index = function(_, k)
@@ -84,12 +84,10 @@ local function {v_dispatcher}()
                 end
                 return _env(0)[k]
             end,
-            __metatable = "Locked by Illusion"
+            __metatable = "Locked"
         }})
         setfenv(_f, _proxy)
         task.spawn(_f)
-    else
-        warn("ETERNAL v12.1 ERROR")
     end
 end
 
@@ -100,14 +98,12 @@ task.spawn({v_dispatcher})
         if not source.strip(): return {"success": False, "error": "No code"}
         start_time = time.time()
         
-        # Junk Code Injection (Ora con nomi variabili solidi)
         junk = []
-        for _ in range(35):
+        for _ in range(20):
             v = self._rv()
-            junk.append(f"local {v} = function() local _ = '{uuid.uuid4()}' return _ end")
+            junk.append(f"local {v} = function() return '{uuid.uuid4()}' end")
 
-        protected = self._eternal_vm_v12_1(source)
-        # CORRETTO: Aggiunti i commenti al Watermark
+        protected = self._eternal_vm_v12_2(source)
         final = "--[[ OBFUSCATED BY ILLUSION HUB OBFUSCATOR ]]\n" + "\n".join(junk) + "\n" + protected
         
         return {
