@@ -3,114 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Illusion Obfuscator | Premium Roblox Protection</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
-    <!-- Usiamo url_for per assicurarci che Render trovi i file -->
+    <title>Illusion | Crimson Blood Edition</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body class="dark">
     <div class="app-layout">
-        <!-- Sidebar -->
         <aside class="sidebar">
-            <div class="sidebar-logo">
-                <div class="logo-box">I</div>
-                <span>ILLUSION</span>
-            </div>
-            
+            <div class="sidebar-logo"><div class="logo-box">I</div><span>ILLUSION</span></div>
             <nav class="sidebar-nav">
-                <a href="#" class="nav-item active" data-page="obfuscator" id="nav-obfuscator">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                    <span>Obfuscation</span>
-                </a>
-                <a href="#" class="nav-item" data-page="dashboard" id="nav-dashboard">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-                    <span>Dashboard (Logs)</span>
-                </a>
-                <a href="#" class="nav-item" data-page="account" id="nav-account">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                    <span>Account & Settings</span>
-                </a>
+                <a href="#" class="nav-item active">Obfuscation</a>
             </nav>
-            
-            <div class="sidebar-footer">
-                <a href="#" class="nav-item">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-                    <span>Documentation</span>
-                </a>
-            </div>
         </aside>
-
-        <!-- Main Content -->
         <main class="main-container">
-            <header class="top-header">
-                <h1 class="page-title" id="page-title">Obfuscation</h1>
-                <div class="header-actions">
-                    <div class="tokens-badge">Tokens: <span>Unlimited</span></div>
-                    <div class="theme-toggle">
-                        <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+            <h1 class="page-title">Obfuscation</h1>
+            <div class="view-section">
+                <div class="editor-area">
+                    <div class="stat-card" style="padding: 20px; margin-bottom: 10px; display: flex; gap: 20px; align-items: center;">
+                        <input type="text" id="script-name" placeholder="Script Name..." style="flex: 1; background: #0f0f0f; border: 1px solid rgba(255,0,0,0.2); padding: 10px; color: white; border-radius: 8px;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span style="font-size: 0.8rem; color: #888;">Pastefy</span>
+                            <label class="switch"><input type="checkbox" id="use-pastefy"><span class="slider round"></span></label>
+                        </div>
+                    </div>
+                    <textarea id="code-input" placeholder="Paste Lua code..."></textarea>
+                    <div class="action-panel">
+                        <div class="strength-pills">
+                            <button class="pill active" data-level="5">Ultra Protection</button>
+                        </div>
+                        <button class="btn-obfuscate" id="btn-obfuscate">PROTECT SCRIPT</button>
+                    </div>
+                    <textarea id="code-output" readonly placeholder="Result..."></textarea>
+                    <div class="history-section" style="margin-top: 30px;">
+                        <h3 style="color: #ff0000; margin-bottom: 15px;">HISTORY</h3>
+                        <div id="history-list" class="stat-card" style="padding: 0;"></div>
                     </div>
                 </div>
-            </header>
-
-            <section class="content-area">
-                <div class="view-section" id="dashboard-view" style="display: none;">
-                    <div class="stats-row">
-                        <div class="stat-card"><span>Total Executions</span><h2 id="total-execs">0</h2></div>
-                        <div class="stat-card"><span>Active Users</span><h2 id="active-users">0</h2></div>
-                    </div>
-                    <div class="history-section">
-                        <h3>Latest Executions (Real-time)</h3>
-                        <div class="history-table" id="logs-table">
-                            <div class="table-header"><span>Player Name</span><span>Script ID</span><span>Time</span></div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="view-section" id="account-view" style="display: none;">
-                    <div class="stat-card" style="max-width: 600px;">
-                        <h3>Account Settings</h3>
-                        <p style="color: var(--text-muted); margin-bottom: 24px;">Manage your profile and global settings.</p>
-                        <div class="form-group" style="margin-bottom: 20px;">
-                            <label style="display: block; margin-bottom: 8px;">Username</label>
-                            <input type="text" id="username" placeholder="Enter username" style="width: 100%; background: var(--bg-input); border: 1px solid var(--border); padding: 10px; border-radius: 8px; color: white;">
-                        </div>
-                        <div class="form-group" style="margin-bottom: 20px;">
-                            <label style="display: block; margin-bottom: 8px;">Global Telemetry URL</label>
-                            <input type="text" id="custom-url" placeholder="http://your-site.com/log_execution" style="width: 100%; background: var(--bg-input); border: 1px solid var(--border); padding: 10px; border-radius: 8px; color: white;">
-                            <small style="color: var(--text-muted);">This URL will be injected into all obfuscated scripts.</small>
-                        </div>
-                        <button class="btn-obfuscate" id="btn-save-settings">SAVE SETTINGS & ACCOUNT</button>
-                    </div>
-                </div>
-
-                <div class="view-section" id="obfuscator-view">
-                    <div class="editor-area" id="editor-area">
-                        <div class="editor-container">
-                            <div class="editor-header"><span>Input Script</span><button id="btn-clear">Clear</button></div>
-                            <textarea id="code-input" placeholder="Paste your Lua code here..."></textarea>
-                        </div>
-                        <div class="action-panel">
-                            <div class="strength-control">
-                                <span>Protection Level:</span>
-                                <div class="strength-pills">
-                                    <button class="pill" data-level="1">Low</button>
-                                    <button class="pill" data-level="3">Med</button>
-                                    <button class="pill active" data-level="5">Ultra</button>
-                                </div>
-                            </div>
-                            <button class="btn-obfuscate" id="btn-obfuscate">OBFUSCATE SCRIPT</button>
-                        </div>
-                        <div class="editor-container">
-                            <div class="editor-header"><span>Protected Script</span><button id="btn-copy">Copy Code</button></div>
-                            <textarea id="code-output" readonly placeholder="Result will appear here..."></textarea>
-                        </div>
-                    </div>
-                </div>
-            </section>
+            </div>
         </main>
     </div>
-    <div id="toast-container"></div>
-    <!-- Usiamo url_for anche qui -->
+    <!-- Payment Modal -->
+    <div id="payment-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 9999; align-items: center; justify-content: center;">
+        <div class="stat-card" style="max-width: 400px; padding: 40px; text-align: center;">
+            <h2>Payment Required</h2>
+            <p style="margin: 20px 0;">0.20€ to giunnalunna@gmail.com</p>
+            <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=giunnalunna@gmail.com&currency_code=EUR&amount=0.20&item_name=Illusion" target="_blank" class="btn-obfuscate" style="display: block; text-decoration: none;">PAY NOW</a>
+            <input type="text" id="tx-id" placeholder="Transaction ID" style="width: 100%; margin: 20px 0; padding: 10px; background: #0f0f0f; border: 1px solid red; color: white;">
+            <button class="btn-obfuscate" id="btn-confirm-pay" style="width: 100%;">CONFIRM</button>
+        </div>
+    </div>
     <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
