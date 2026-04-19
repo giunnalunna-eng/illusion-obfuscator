@@ -1,16 +1,24 @@
-:root { --accent: #ff0000; --bg: #080808; }
-body { background: var(--bg); color: white; font-family: 'Inter', sans-serif; }
-.sidebar { width: 260px; background: #0a0a0a; border-right: 1px solid rgba(255,0,0,0.1); padding: 30px; height: 100vh; }
-.logo-box { width: 32px; height: 32px; background: var(--accent); color: black; display: flex; align-items: center; justify-content: center; font-weight: 900; border-radius: 4px; box-shadow: 0 0 15px var(--accent); }
-.main-container { flex: 1; padding: 40px; }
-.stat-card { background: #121212; border: 1px solid rgba(255,0,0,0.2); border-radius: 12px; padding: 20px; }
-textarea { width: 100%; height: 250px; background: #0f0f0f; border: 1px solid rgba(255,0,0,0.1); color: #eee; padding: 15px; border-radius: 8px; margin: 10px 0; font-family: monospace; }
-.btn-obfuscate { background: linear-gradient(135deg, #ff0000, #800000); color: white; border: none; padding: 15px 30px; border-radius: 8px; font-weight: 800; cursor: pointer; }
-.switch { position: relative; display: inline-block; width: 40px; height: 20px; }
+:root { --accent: #ff0000; --bg: #050505; }
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Space Grotesk', sans-serif; }
+body { background: var(--bg); color: white; overflow-x: hidden; }
+.glow-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at 10% 20%, rgba(255, 0, 0, 0.05) 0%, transparent 40%); z-index: -1; }
+.app-container { display: flex; }
+.side-nav { width: 260px; background: #0a0a0a; border-right: 1px solid rgba(255,0,0,0.1); padding: 40px 20px; height: 100vh; position: sticky; top: 0; }
+.brand { color: var(--accent); font-weight: 700; font-size: 1.4rem; display: flex; align-items: center; gap: 12px; margin-bottom: 60px; }
+.brand-icon { width: 36px; height: 36px; background: var(--accent); color: black; display: flex; align-items: center; justify-content: center; border-radius: 8px; font-weight: 900; box-shadow: 0 0 20px var(--accent); }
+.content-wrapper { flex: 1; padding: 40px 60px; }
+.obfuscator-grid { display: grid; grid-template-columns: 1fr 280px 1fr; gap: 30px; }
+.glass { background: rgba(15, 15, 15, 0.7); backdrop-filter: blur(20px); border: 1px solid rgba(255,0,0,0.1); border-radius: 20px; overflow: hidden; }
+.panel-header { padding: 15px; border-bottom: 1px solid rgba(255,0,0,0.1); display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--accent); text-transform: uppercase; }
+textarea { width: 100%; height: 450px; background: transparent; border: none; padding: 25px; color: #fff; font-family: monospace; outline: none; }
+.controls-panel { padding: 30px 20px; display: flex; flex-direction: column; gap: 20px; }
+.control-group label { display: block; font-size: 0.7rem; color: #555; margin-bottom: 8px; text-transform: uppercase; }
+.control-group input { width: 100%; background: #111; border: 1px solid rgba(255,0,0,0.1); padding: 12px; border-radius: 8px; color: white; }
+.btn-primary-glow { background: var(--accent); color: white; border: none; padding: 18px; border-radius: 12px; font-weight: 700; cursor: pointer; box-shadow: 0 0 20px rgba(255, 0, 0, 0.3); }
+.switch { position: relative; width: 44px; height: 22px; display: inline-block; }
 .switch input { opacity: 0; width: 0; height: 0; }
-.slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background: #222; transition: .4s; border-radius: 20px; }
-.slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 3px; bottom: 3px; background: #888; transition: .4s; border-radius: 50%; }
+.slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background: #222; border-radius: 20px; transition: 0.4s; }
+.slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px; background: white; border-radius: 50%; transition: 0.4s; }
 input:checked + .slider { background: var(--accent); }
-input:checked + .slider:before { transform: translateX(20px); background: white; }
-.history-item { display: flex; justify-content: space-between; padding: 15px; border-bottom: 1px solid #222; }
-.history-name { font-weight: 700; }
+input:checked + .slider:before { transform: translateX(22px); }
+.history-card { background: #0a0a0a; border: 1px solid rgba(255,0,0,0.1); padding: 15px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
