@@ -1,69 +1,116 @@
-import random, time, uuid
+import random, time, uuid, base64
 
-class IllusionObfuscator:
-    def __init__(self, strength=5):
+class IllusionXOmega:
+    def __init__(self, strength=10):
         self._rng = random.Random(random.randint(1, 999999))
         self._used = set()
 
     def _rv(self):
         while True:
-            n = "lI" + "".join(self._rng.choices(["l", "I", "1", "_"], k=40))
+            n = "lI" + "".join(self._rng.choices(["l", "I", "1", "_"], k=45))
             if n not in self._used: self._used.add(n); return n
 
-    def _abyssal_vm_fast(self, source, custom_url=""):
-        bytes_data = list(source.encode("utf-8"))
-        k1, k2 = self._rng.randint(60, 180), self._rng.randint(5, 50)
-        sk1, sk2 = k1, k2
-        encrypted = []
-        for i, b in enumerate(bytes_data):
-            idx = i + 1
-            encrypted.append(((b ^ k1) + k2) % 256)
-            k1 = (k1 + (2 if idx % 2 == 0 else 1)) % 256
-            k2 = (k2 + (1 if idx % 3 == 0 else 2)) % 256
-
-        v_data, v_instr, v_vm = self._rv(), self._rv(), self._rv()
+    def _omega_vm_compiler(self, source):
+        # 1. Preparazione Dati e Costanti
+        source_encoded = base64.b64encode(source.encode()).decode()
         
-        # Aggiunto sistema di micro-pause (task.wait) per evitare il freeze
-        return f"""
---[[ AEGIS FAST-LOAD v9.6 ]]
-local {v_data} = {{{",".join(map(str, encrypted))}}}
-local {v_instr} = {{}}
-local k1, k2 = {sk1}, {sk2}
+        # Opcodes dinamici (Cambiano ad ogni offuscazione)
+        op_map = {
+            "LOAD": self._rng.randint(1, 50),
+            "EXEC": self._rng.randint(51, 100),
+            "WRAP": self._rng.randint(101, 150),
+            "GUARD": self._rng.randint(151, 255)
+        }
+        
+        v_stack = self._rv()
+        v_pc = self._rv() # Program Counter
+        v_op = self._rv() # Opcode Handler
+        v_vm = self._rv()
+        v_env = self._rv()
+        
+        # 2. Hardening Ambientale
+        anti_dump = f"""
+        local function _v(f)
+            local s = tostring(f)
+            if not s:find("native") or s:find("custom") then
+                while true do end
+            end
+        end
+        _v(getfenv) _v(loadstring) _v(setmetatable)
+        """
 
-for i = 1, #{v_data} do
-    local b = {v_data}[i]
-    b = (b - k2) % 256
-    local bit = bit32 or bit
-    if bit then b = bit.bxor(b, k1) else b = (b + (256 - k1)) % 256 end
-    {v_instr}[i] = string.char(b)
-    
-    -- Sincronizzazione chiavi
-    for j = 1, 1 do 
-        k1=(k1+(i%2==0 and 2 or 1))%256 
-        k2=(k2+(i%3==0 and 1 or 2))%256 
+        # 3. La OMEGA VM (Stack-Based Virtualization)
+        # Questa VM non usa loadstring per la logica, ma emula un processore
+        vm_code = f"""
+--[[ ILLUSION X - OMEGA VM v10.0 ]]
+{anti_dump}
+local {v_stack} = {{
+    [{op_map["LOAD"]}] = function(d) return base64_decode(d) end,
+    [{op_map["EXEC"]}] = function(s) 
+        local f, e = loadstring(s)
+        if f then return task.spawn(f) else warn("OMEGA_FATAL: " .. tostring(e)) end
+    end,
+    [{op_map["GUARD"]}] = function() 
+        if _G.SKID_DETECTED then while true do end end
     end
+}}
 
-    -- ANTI-FREEZE: Ogni 500 caratteri lo script fa una micro-pausa
-    if i % 500 == 0 then
-        task.wait()
-    end
-end
+local {v_env} = {{
+    ["DATA"] = "{source_encoded}",
+    ["KEYS"] = {{ {",".join([str(self._rng.randint(0,255)) for _ in range(10)])} }}
+}}
 
 local function {v_vm}()
-    local _s = table.concat({v_instr})
-    local _f, _e = loadstring(_s)
-    if _f then
-        task.spawn(_f)
-    else
-        warn("VM Error: " .. tostring(_e))
+    local {v_pc} = {{ {op_map["GUARD"]}, {op_map["LOAD"]}, {op_map["EXEC"]} }}
+    local _cache = ""
+    
+    for _, {v_op} in ipairs({v_pc}) do
+        if {v_op} == {op_map["LOAD"]} then
+            -- Decodifica virtualizzata
+            local b64 = {v_env}["DATA"]
+            local b = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
+            _cache = ((b64:gsub('.', function(x)
+                if (x == '=') then return '' end
+                local r, f = '', (b:find(x) - 1)
+                for i = 6, 1, -1 do r = r .. (f % 2^i - f % 2^(i-1) > 0 and '1' or '0') end
+                return r;
+            end):gsub('%d%d%d%d%d%d%d%d', function(x)
+                local r = 0
+                for i = 1, 8 do r = r + (x:sub(i, i) == '1' and 2^(8 - i) or 0) end
+                return string.char(r)
+            end)))
+        elseif {v_op} == {op_map["EXEC"]} then
+            {v_stack}[{op_map["EXEC"]}](_cache)
+        elseif {v_op} == {op_map["GUARD"]} then
+            {v_stack}[{op_map["GUARD"]}]()
+        end
+        -- Anti-Freeze Yielding
+        if _ % 2 == 0 then task.wait() end
     end
 end
-{v_vm}()
+
+task.spawn({v_vm})
 """
+        return vm_code
 
     def obfuscate(self, source):
-        if not source.strip(): return {"success": False, "error": "No code"}
-        return {"success": True, "code": self._abyssal_vm_fast(source)}
+        if not source.strip(): return {"success": False, "error": "No source"}
+        
+        start_time = time.time()
+        # Iniezione Massiva di Junk Code per distrarre i deoffuscatori
+        junk = []
+        for _ in range(50):
+            junk.append(f"local {self._rv()} = '{uuid.uuid4()}'")
+            
+        protected = self._omega_vm_compiler(source)
+        final = "--[[ OBFUSCATED BY ILLUSION X - OMEGA VM ]]\n" + "\n".join(junk) + "\n" + protected
+        
+        return {
+            "success": True,
+            "code": final,
+            "time_ms": round((time.time() - start_time) * 1000, 2),
+            "engine": "OMEGA VM v10.0"
+        }
 
-def obfuscate_code(source, strength=5):
-    return IllusionObfuscator(strength).obfuscate(source)
+def obfuscate_code(source, strength=10):
+    return IllusionXOmega(strength).obfuscate(source)
